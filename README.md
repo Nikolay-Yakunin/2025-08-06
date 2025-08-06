@@ -19,6 +19,7 @@ go mod tidy
 ## Обзор проекта
 
 Структура проекта:
+```
 .
 ├── cmd
 │   └── archiver_service
@@ -37,7 +38,7 @@ go mod tidy
 ├── pkg
 │   └── config
 │       └── config.go
-
+```
 ## Использование
 
 ### Подготовка
