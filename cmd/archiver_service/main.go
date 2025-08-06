@@ -33,11 +33,15 @@ func main() {
 		id, err := taskManager.CreateTask([]string{})
 		if err != nil {
 			w.WriteHeader(http.StatusTooManyRequests)
-			json.NewEncoder(w).Encode(map[string]string{"error": "server busy"})
+			if err := json.NewEncoder(w).Encode(map[string]string{"error": "server busy"}); err != nil {
+				log.Printf("Failed to encode error response: %v", err)
+			}
 			return
 		}
 
-		json.NewEncoder(w).Encode(map[string]string{"task_id": id})
+		if err := json.NewEncoder(w).Encode(map[string]string{"task_id": id}); err != nil {
+			log.Printf("Failed to encode task_id response: %v", err)
+		}
 	})
 
 	// POST /task/{task_id} и GET /task/{task_id}
@@ -59,7 +63,9 @@ func main() {
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.URL == "" {
 				log.Printf("Invalid body for task %s", taskID)
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(map[string]string{"error": "invalid body"})
+				if err := json.NewEncoder(w).Encode(map[string]string{"error": "invalid body"}); err != nil {
+					log.Printf("Failed to encode error response: %v", err)
+				}
 				return
 			}
 
@@ -68,13 +74,17 @@ func main() {
 			if err != nil {
 				log.Printf("Task not found: %s", taskID)
 				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(map[string]string{"error": "task not found"})
+				if err := json.NewEncoder(w).Encode(map[string]string{"error": "task not found"}); err != nil {
+					log.Printf("Failed to encode error response: %v", err)
+				}
 				return
 			}
 
 			status, _ := taskManager.GetStatus(taskID)
 			log.Printf("Task %s status after add: %s", taskID, status)
-			json.NewEncoder(w).Encode(map[string]string{"status": string(status)})
+			if err := json.NewEncoder(w).Encode(map[string]string{"status": string(status)}); err != nil {
+				log.Printf("Failed to encode status response: %v", err)
+			}
 			return
 		}
 
@@ -83,7 +93,9 @@ func main() {
 			if err != nil {
 				log.Printf("Task not found: %s", taskID)
 				w.WriteHeader(http.StatusNotFound)
-				json.NewEncoder(w).Encode(map[string]string{"error": "task not found"})
+				if err := json.NewEncoder(w).Encode(map[string]string{"error": "task not found"}); err != nil {
+					log.Printf("Failed to encode error response: %v", err)
+				}
 				return
 			}
 
@@ -94,7 +106,9 @@ func main() {
 			}
 
 			log.Printf("Task %s status: %s", taskID, status)
-			json.NewEncoder(w).Encode(resp)
+			if err := json.NewEncoder(w).Encode(resp); err != nil {
+				log.Printf("Failed to encode response: %v", err)
+			}
 			return
 		}
 
@@ -119,16 +133,24 @@ func main() {
 		if err != nil {
 			log.Printf("Archive not found for task %s", taskID)
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(map[string]string{"error": "archive not found"})
+			if err := json.NewEncoder(w).Encode(map[string]string{"error": "archive not found"}); err != nil {
+				log.Printf("Failed to encode error response: %v", err)
+			}
 			return
 		}
-		defer f.Close()
+		defer func() {
+			if err := f.Close(); err != nil {
+				log.Printf("Failed to close file: %v", err)
+			}
+		}()
 
 		// Заголовки
 		w.Header().Set("Content-Type", "application/zip")
 		w.Header().Set("Content-Disposition", "attachment; filename=archive.zip")
 		log.Printf("Serving archive for task %s", taskID)
-		io.Copy(w, f)
+		if _, err := io.Copy(w, f); err != nil {
+			log.Printf("Failed to copy file to response: %v", err)
+		}
 	})
 
 	server := &http.Server{
