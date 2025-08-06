@@ -106,24 +106,3 @@ func (a *actorImpl) start(ctx context.Context) {
 		}
 	}
 }
-
-// ------ Usage ------
-//
-// func main() {
-//     handlers := map[string]actor.Handler{
-//         "download": func(ctx context.Context, payload any) error {
-//             url, ok := payload.(string)
-//             if !ok {
-//                 return fmt.Errorf("payload is not a string URL")
-//             }
-//             fmt.Println(url)
-//             return nil
-//         },
-//     }
-//
-//     // Передаём log.Default() и включаем режим отладки
-//     downloadActor := actor.NewActor(5, handlers, log.Default(), true)
-//
-//     downloadActor.Send("download", "https://example.com/file.zip")
-//     downloadActor.Stop()
-// }
