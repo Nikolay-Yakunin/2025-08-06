@@ -1,12 +1,12 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/Nikolay-Yakunin/2025-08-06)](https://goreportcard.com/report/github.com/Nikolay-Yakunin/2025-08-06)
+[![Release](https://img.shields.io/github/release/Nikolay-Yakunin/2025-08-06)](https://github.com/Nikolay-Yakunin/2025-08-06/releases)
+![Go version](https://img.shields.io/badge/Go-1.22.2+-blue)
 # Archiver Service
 
 Сервис для архивации файлов по ссылкам. Позволяет создавать задачи, 
 добавлять ссылки на файлы и получать архив со скачанными файлами.
 
 ## Requirments
-
-Минимальная версия go:
-- 1.22.2
 
 Здесь используется библиотека - github.com/google/uuid v1.6.0
 
@@ -38,6 +38,14 @@ go mod tidy
 ├── pkg
 │   └── config
 │       └── config.go
+```
+
+```mermaid
+graph TD
+    A[HTTP Client] --> B[Task Manager]
+    B --> C[Downloader]
+    C --> D[Archiver]
+    D --> E[FileStorage]
 ```
 ## Использование
 
@@ -71,6 +79,16 @@ MODE=development
 ```
 
 ### Запуск
+
+Склонируйте репозиторий:
+```sh
+git clone https://github.com/Nikolay-Yakunin/2025-08-06.git
+```
+
+Перейдите в директориб с проектом:
+```sh
+cd 2025-08-06
+```
 
 Для того чтобы запустить экземпляр приложения, вы можете использовать комманду:
 ```sh
