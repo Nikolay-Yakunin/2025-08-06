@@ -113,7 +113,7 @@ curl -X GET http://localhost:8080/task/<TASK_ID>
 curl -O http://localhost:8080/download/<TASK_ID>
 ```
 
-Я написал готовый скрипт для простого теста,
+Я написал готовый скрипт простого теста,
 для его запуска:
 ```sh
 bash test.sh
