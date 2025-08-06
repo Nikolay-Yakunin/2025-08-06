@@ -90,7 +90,7 @@ curl -X GET http://localhost:8080/task
 ```
 
 Добавить ссылку в задачу,
-нужно добавить TASK_ID, которое мы получили с помощью прошлого запроса. 
+нужно добавить TASK_ID, которое мы получили с помощью прошлого запроса и заменить url для скачивания. 
 ```sh
 curl -X POST http://localhost:8080/task/<TASK_ID> \
   -H "Content-Type: application/json" \
