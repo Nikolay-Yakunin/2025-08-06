@@ -31,10 +31,19 @@ func (a *ZipArchiver) CreateZip(files []string, dest string) error {
 	if err != nil {
 		return err
 	}
-	defer zipFile.Close()
+
+	defer func() {
+			if err := zipFile.Close(); err != nil {
+				return
+			}
+		}()
 
 	zipWriter := zip.NewWriter(zipFile)
-	defer zipWriter.Close()
+	defer func() {
+			if err := zipWriter.Close(); err != nil {
+				return
+			}
+		}()
 
 	// Добавление файлов в архив.
 	for _, file := range files {
@@ -51,7 +60,11 @@ func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+			if err := file.Close(); err != nil {
+				return
+			}
+		}()
 
 	info, err := file.Stat()
 	if err != nil {

@@ -43,7 +43,11 @@ func (d *HTTPDownloader) Download(ctx context.Context, url, dest string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+			if err := resp.Body.Close(); err != nil {
+				return
+			}
+		}()
 
 	extCaugh := 0
 	for _, ext := range d.AllowedExts {
@@ -72,7 +76,11 @@ func (d *HTTPDownloader) Download(ctx context.Context, url, dest string) error {
 	if err != nil {
 		return err
 	}
-	defer out.Close()
+	defer func() {
+			if err := out.Close(); err != nil {
+				return
+			}
+		}()
 
 	_, err = io.Copy(out, resp.Body)
 	return err
