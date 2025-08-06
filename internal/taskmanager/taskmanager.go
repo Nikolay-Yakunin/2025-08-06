@@ -253,7 +253,7 @@ func (tm *TaskManager) processTask(taskID string, urls []string) {
 			failedDownloads++
 			t.AddError(url, err.Error())
 			tm.logger.Printf("Failed to download %s for task %s: %v", url, taskID, err)
-			// Удаление url из urls, 
+			// Удаление url из urls,
 			// чтобы не забивать "очередь".
 			t.Mu.Lock()
 			for i, u := range t.URLs {
